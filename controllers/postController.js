@@ -24,24 +24,19 @@ const createPost = asyncHandler(
 )
 
 
-
 //  get user's all posts
 const getAllPosts = asyncHandler(
     async (req, res) => {
         const userId = req.user
         if (!userId) return res.status(400).json({ message: "cannot retrieve posts: missing userId" })
-
         // // make sure the user requesting matches the url params
         // if (userId !== req.params.userId) {
         //     return res.status(403).json({ message: "forbidden: cannot view other's posts" })
         // }
-
         const posts = await Post.find({ author: userId })
         res.status(200).json(posts)
     }
 )
-
-
 
 
 const getSinglePost = asyncHandler(
@@ -120,5 +115,28 @@ const deletePost = asyncHandler(
 )
 
 
+const searchPost = asyncHandler(
+    async (req, res) => {
+        const userId = req.user
+        // console.log(req.query.q1, req.query.q2)
+        const filteredTerm = req.query.q1
+        const option = req.query.q2
+        const keywordReg = new RegExp(filteredTerm, 'i')
 
-export { createPost, getAllPosts, editPost, deletePost, getSinglePost }
+        if (!userId || !option || !filteredTerm) {
+            return res.status(400).json({ message: "Both Search field and keyword are required" })
+        }
+
+        let posts = null
+
+        if (option === "posts") {
+            posts = await Post.find({ $or: [{ author: userId, title: keywordReg }, { author: userId, content: keywordReg }] })
+        } else {
+            posts = await Post.find({ author: userId, tags: keywordReg })
+        }
+        res.status(200).json(posts)
+    }
+)
+
+
+export { createPost, getAllPosts, editPost, deletePost, getSinglePost, searchPost }

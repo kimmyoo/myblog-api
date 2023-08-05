@@ -14,6 +14,9 @@ router.route('/')
     .delete(postController.deletePost)
     .patch(postController.editPost)
 
+router.route('/search')
+    .get(postController.searchPost)
+
 router.route('/post/:postId')
     .get(postController.getSinglePost)
 

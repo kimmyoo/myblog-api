@@ -17,6 +17,8 @@ import cookieParser from "cookie-parser";
 
 // middleware
 import verifyJWT from "./middleware/verifyJWT.js";
+import { logger } from "./middleware/logger.js";
+import errorHandler from "./middleware/errorHandler.js";
 
 // routes import
 import rootRoutes from "./routes/rootRoutes.js";
@@ -38,16 +40,16 @@ dotenv.config()
 
 // instantiate express app
 const app = express()
+app.use(logger)
+// allows cross origin requests
+// app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }))
+// for logging http requests 
 app.use(cors(corsOptions))
 // for parsing json()
 app.use(express.json())
 app.use(cookieParser())
 app.use(helmet())
-// allows cross origin requests 
-app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }))
-// for logging http requests 
 app.use(morgan("common"))
-
 
 /* Parse incoming request bodies in a 
 middleware before your handlers, 
@@ -115,6 +117,7 @@ mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
+    app.use(errorHandler)
     app.listen(PORT, () => {
         console.log(`db connected, server running on port: ${PORT}`)
     })
