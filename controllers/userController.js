@@ -8,7 +8,8 @@ import mongoose from 'mongoose'
 
 const getUser = asyncHandler(async (req, res) => {
     const { id } = req.params
-    if (!id) return res.status(400).json({ message: 'user id is needed' })
+    console.log(id, typeof id)
+    if (!id || (id === 'undefined')) return res.status(400).json({ message: 'user id is needed' })
     // using lean() in mongoose returns a regular javascript object
     // in this case I want to delete password property
     // not using lean() will cause the property being unable to be deleted.

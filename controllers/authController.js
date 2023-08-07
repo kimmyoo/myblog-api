@@ -91,7 +91,6 @@ const refresh = (req, res) => {
     if (!cookies?.jwt) return res.status(401).json({ message: "unauthorized" })
     // we do received the cookies 
     const refreshToken = cookies.jwt
-
     jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
@@ -101,7 +100,8 @@ const refresh = (req, res) => {
             async (err, decoded) => {
                 // console.log(decoded)
                 if (err) return res.status(403).json({ message: 'forbidden' })
-                const user = await User.findOne({ id: decoded.userInfo.id })
+                const user = await User.findOne({ _id: decoded.userInfo.id }).lean()
+
                 delete user.password
                 // found the user and grant another access token
                 const accessToken = jwt.sign(
