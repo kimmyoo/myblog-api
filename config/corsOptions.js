@@ -7,7 +7,9 @@ const corsOptions = {
             // throw error
             callback(new Error('Not allowed by CORS'))
         }
-
+        if (allowedOrigins.includes(origin)) {
+            res.setHeader('Access-Control-Allow-Origin', origin);
+        }
         // this is for development using postman
         // if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
         //     // allow
