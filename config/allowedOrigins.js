@@ -1,6 +1,6 @@
 const allowedOrigins = [
-    'http://localhost:3000',
-    'https://www.mydomain.com',
+    'https://yaosblog.onrender.com',
+    // 'http://localhost:3000',
     //  for testing cors setup
     // 'https://www.google.com' 
 ]
